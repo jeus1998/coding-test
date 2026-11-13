@@ -1,25 +1,38 @@
 import java.util.*;
 class Solution {
-    private static int CACHE_HIT = 1;
-    private static int CACHE_MISS = 5;
-    private static int answer = 0;
     public int solution(int cacheSize, String[] cities) {
-        if(cacheSize == 0) return cities.length * CACHE_MISS;
-        Deque<String> cache = new LinkedList<>();
-        for(int i = 0; i < cities.length; i++) {
-            String city = cities[i].toLowerCase();
-            if(cache.contains(city)) {
-                answer += CACHE_HIT;
-                cache.remove(city);
-                cache.addLast(city);
-                continue;
+        int answer = 0;
+        LinkedList<String> cache = new LinkedList<>();
+        for(String target : cities){
+            target = target.toLowerCase();
+            if(cache.contains(target)){
+                cache.remove(target);
+                cache.addLast(target);
+                answer++;
             }
-            answer += CACHE_MISS;
-            if(cacheSize == cache.size()) {
-                cache.pollFirst();
+            else{
+                if(cache.size() < cacheSize){
+                    cache.addLast(target);
+                }
+                else if(cache.size() == cacheSize && cacheSize > 0){
+                    cache.pollFirst();
+                    cache.addLast(target);
+                }
+                
+                answer += 5;
             }
-            cache.addLast(city);
         }
         return answer;
     }
 }
+/*
+Jeju", "Pangyo", "Seoul    + 15 
+Pangyo", "Seoul", "Jeju"   + 1
+"Seoul", "Jeju", "Pangyo"  + 1
+"Jeju", "Pangyo", "Seoul"  + 1
+"Pangyo", "Seoul", "Jeju"  + 1
+"Seoul", "Jeju", "Pangyo"  + 1
+                           + 1
+                           -> 21 
+
+*/
